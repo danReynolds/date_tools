@@ -1,5 +1,5 @@
-name: date_period
-description: A new Flutter package project.
+name: date_tools
+description: Tools for managing dates including a DateInterval and DatePeriods implementation.
 version: 0.0.1
 homepage:
 
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

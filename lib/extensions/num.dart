@@ -1,3 +1,5 @@
+part of date_tools;
+
 extension NumDurationExtensions on num {
   Duration get microseconds => Duration(microseconds: round());
   Duration get ms => (this * 1000).microseconds;

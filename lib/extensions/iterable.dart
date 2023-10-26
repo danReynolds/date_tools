@@ -1,3 +1,5 @@
+part of date_tools;
+
 extension IterableExtensions<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T item) predicate) {
     try {
