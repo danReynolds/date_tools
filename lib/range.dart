@@ -1,4 +1,4 @@
-import 'package:date_period/date_period.dart';
+import 'package:date_period/period.dart';
 import 'package:date_period/extensions/num.dart';
 
 class DateRange {
