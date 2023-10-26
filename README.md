@@ -16,7 +16,7 @@ print(DateInterval.day(now).end()); // DateTime:<2023-10-26 23:59:59.999999Z>
 
 print(DateInterval.year(now).next().start); // DateTime:<2024-01-01 00:00:00.000000Z>
 
-print(DateInterval.month().generate(4).map((interval) => interval.start).toList());
+print(DateInterval.month(now).generate(4).map((interval) => interval.start).toList());
 // DateTime:<2023-10-01 00:00:00.000000Z>
 // DateTime:<2023-11-01 00:00:00.000000Z>
 // DateTime:<2023-12-01 00:00:00.000000Z>
