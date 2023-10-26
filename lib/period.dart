@@ -55,4 +55,8 @@ enum DatePeriod {
   DateTime get end {
     return interval.end;
   }
+
+  bool contains(DateTime date) {
+    return interval.spans(date);
+  }
 }

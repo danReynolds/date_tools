@@ -1,39 +1,38 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Date Tools
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+Tools for working with dates including a [DateInterval] and [DatePeriod] implementation.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+### Date Intervals
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
-## Features
-
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+The [DateInterval] API makes it easier to work with common date intervals like days, months and years. You can check the start/end of intervals,
+move to previous and next intervals, and generate sequences of intervals.
 
 ```dart
-const like = 'sample';
+/// The interval defaults to the [DateTime.now()], but we'll provide a date to make it clear.
+final now = DateTime(2023, 10, 26);
+
+print(DateInterval.day(now).start()); // DateTime:<2023-10-26 00:00:00.000000Z>
+print(DateInterval.day(now).end()); // DateTime:<2023-10-26 23:59:59.999999Z>
+
+print(DateInterval.year(now).next().start); // DateTime:<2024-01-01 00:00:00.000000Z>
+
+print(DateInterval.month().generate(4).map((interval) => interval.start).toList());
+// DateTime:<2023-10-01 00:00:00.000000Z>
+// DateTime:<2023-11-01 00:00:00.000000Z>
+// DateTime:<2023-12-01 00:00:00.000000Z>
+// DateTime:<2024-01-01 00:00:00.000000Z>
 ```
 
-## Additional information
+### Date Periods
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+The [DatePeriod] enum exposes common date periods like the current week, month and year.
+
+```dart
+print(DatePeriod.today.start) // DateTime:<2023-10-26 00:00:00.000000Z>
+print(DatePeriod.today.end) // DateTime:<2023-10-26 23:59:59.999999Z>
+
+print(DatePeriod.thisWeek.contains(DateTime(2023, 10, 26))) // true
+print(DatePeriod.lastWeek.contains(DateTime(2023, 10, 26))) // false
+```
+
+More tools will be added in the future. Happy coding!

@@ -1,7 +1,7 @@
 name: date_tools
-description: Tools for managing dates including a DateInterval and DatePeriods implementation.
+description: Tools for managing dates including a DateInterval and DatePeriod implementation.
 version: 0.0.1
-homepage:
+homepage: https://github.com/danReynolds/date_tools
 
 environment:
   sdk: '>=3.1.3 <4.0.0'
