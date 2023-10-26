@@ -75,6 +75,30 @@ class DateInterval {
     return DateInterval._fromDate(_interval, end.add(1.microseconds));
   }
 
+  DateInterval subtract(int count) {
+    if (count < 0) {
+      return add(count * -1);
+    }
+
+    if (count > 0) {
+      return previous().subtract(count - 1);
+    }
+
+    return this;
+  }
+
+  DateInterval add(int count) {
+    if (count < 0) {
+      return subtract(count * -1);
+    }
+
+    if (count > 0) {
+      return next().add(count - 1);
+    }
+
+    return this;
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) {

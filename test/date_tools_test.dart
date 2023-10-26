@@ -92,8 +92,6 @@ void main() {
     });
 
     test('Generates interval sequences', () {
-      final now = DateTime.utc(2023, 10, 26);
-
       expect(DateInterval.hour().generate(3).toList(), [
         DateInterval.hour(),
         DateInterval.hour(now.add(1.hours)),
@@ -148,6 +146,53 @@ void main() {
         DateInterval.year(now.subtract(365.days)),
         DateInterval.year(now.subtract(730.days)),
       ]);
+    });
+
+    test('adds/subtracts intervals correctly', () {
+      expect(
+        DateInterval.hour().subtract(2),
+        DateInterval.hour(DateTime.utc(2023, 10, 25, 22)),
+      );
+      expect(
+        DateInterval.hour().add(2),
+        DateInterval.hour(DateTime.utc(2023, 10, 26, 2)),
+      );
+
+      expect(
+        DateInterval.day().subtract(2),
+        DateInterval.day(DateTime.utc(2023, 10, 24)),
+      );
+      expect(
+        DateInterval.day().add(2),
+        DateInterval.day(DateTime.utc(2023, 10, 28)),
+      );
+
+      expect(
+        DateInterval.week().subtract(2),
+        DateInterval.week(DateTime.utc(2023, 10, 12)),
+      );
+      expect(
+        DateInterval.week().add(2),
+        DateInterval.week(DateTime.utc(2023, 11, 9)),
+      );
+
+      expect(
+        DateInterval.month().subtract(2),
+        DateInterval.month(DateTime.utc(2023, 8, 26)),
+      );
+      expect(
+        DateInterval.month().add(2),
+        DateInterval.month(DateTime.utc(2023, 12, 26)),
+      );
+
+      expect(
+        DateInterval.year().subtract(2),
+        DateInterval.year(DateTime.utc(2021, 10, 26)),
+      );
+      expect(
+        DateInterval.year().add(2),
+        DateInterval.year(DateTime.utc(2025, 10, 26)),
+      );
     });
   });
 
