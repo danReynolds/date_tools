@@ -1,5 +1,5 @@
+import 'package:date_tools/date_tools.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:date_tools/period.dart';
 
 void main() {
   group('DateInterval', () {
