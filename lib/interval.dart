@@ -17,7 +17,7 @@ class DateInterval {
   late final DateTime end;
 
   static DateTime Function() now = () {
-    return DateTime.timestamp();
+    return DateTime.now();
   };
 
   DateInterval._fromDate(this._interval, [DateTime? date])
