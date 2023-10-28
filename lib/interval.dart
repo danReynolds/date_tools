@@ -120,6 +120,8 @@ class DateInterval {
         (date.isAfter(start) && date.isBefore(end));
   }
 
+  /// Generates an [Iterable] of [count] [DateInterval] beginning at the current iterable and moving forwards
+  /// in time if [count] is positive, or backwards if negative.
   Iterable<DateInterval> generate(int count) sync* {
     DateInterval current = this;
 
@@ -136,5 +138,25 @@ class DateInterval {
         current = current.previous();
       }
     }
+  }
+
+  /// Returns the number of intervals between [startDate] and [endDate].
+  int difference(DateTime startDate, DateTime endDate) {
+    int count = 0;
+    final startInterval = DateInterval._fromDate(_interval, startDate);
+    final endInterval = DateInterval._fromDate(_interval, endDate);
+
+    DateInterval interval = startInterval;
+
+    while (interval != endInterval) {
+      count++;
+      if (interval.start.isBefore(endInterval.start)) {
+        interval = interval.next();
+      } else {
+        interval = interval.previous();
+      }
+    }
+
+    return count;
   }
 }
