@@ -6,41 +6,41 @@ void main() {
     late DateTime now;
 
     setUp(() {
-      now = DateTime.utc(2023, 10, 26);
+      now = DateTime(2023, 10, 26);
       DateInterval.now = () {
         return now;
       };
     });
 
     test('has expected start/end dates', () {
-      expect(DateInterval.hour().start, DateTime.utc(2023, 10, 26));
+      expect(DateInterval.hour().start, DateTime(2023, 10, 26));
       expect(
         DateInterval.hour().end,
-        DateTime.utc(2023, 10, 26, 1).subtract(1.microseconds),
+        DateTime(2023, 10, 26, 1).subtract(1.microseconds),
       );
 
-      expect(DateInterval.day().start, DateTime.utc(2023, 10, 26));
+      expect(DateInterval.day().start, DateTime(2023, 10, 26));
       expect(
         DateInterval.day().end,
-        DateTime.utc(2023, 10, 27).subtract(1.microseconds),
+        DateTime(2023, 10, 27).subtract(1.microseconds),
       );
 
-      expect(DateInterval.week().start, DateTime.utc(2023, 10, 23));
+      expect(DateInterval.week().start, DateTime(2023, 10, 23));
       expect(
         DateInterval.week().end,
-        DateTime.utc(2023, 10, 30).subtract(1.microseconds),
+        DateTime(2023, 10, 30).subtract(1.microseconds),
       );
 
-      expect(DateInterval.month().start, DateTime.utc(2023, 10));
+      expect(DateInterval.month().start, DateTime(2023, 10));
       expect(
         DateInterval.month().end,
-        DateTime.utc(2023, 11).subtract(1.microseconds),
+        DateTime(2023, 11).subtract(1.microseconds),
       );
 
-      expect(DateInterval.year().start, DateTime.utc(2023));
+      expect(DateInterval.year().start, DateTime(2023));
       expect(
         DateInterval.year().end,
-        DateTime.utc(2024).subtract(1.microseconds),
+        DateTime(2024).subtract(1.microseconds),
       );
     });
 
@@ -151,47 +151,47 @@ void main() {
     test('adds/subtracts intervals correctly', () {
       expect(
         DateInterval.hour().subtract(2),
-        DateInterval.hour(DateTime.utc(2023, 10, 25, 22)),
+        DateInterval.hour(DateTime(2023, 10, 25, 22)),
       );
       expect(
         DateInterval.hour().add(2),
-        DateInterval.hour(DateTime.utc(2023, 10, 26, 2)),
+        DateInterval.hour(DateTime(2023, 10, 26, 2)),
       );
 
       expect(
         DateInterval.day().subtract(2),
-        DateInterval.day(DateTime.utc(2023, 10, 24)),
+        DateInterval.day(DateTime(2023, 10, 24)),
       );
       expect(
         DateInterval.day().add(2),
-        DateInterval.day(DateTime.utc(2023, 10, 28)),
+        DateInterval.day(DateTime(2023, 10, 28)),
       );
 
       expect(
         DateInterval.week().subtract(2),
-        DateInterval.week(DateTime.utc(2023, 10, 12)),
+        DateInterval.week(DateTime(2023, 10, 12)),
       );
       expect(
         DateInterval.week().add(2),
-        DateInterval.week(DateTime.utc(2023, 11, 9)),
+        DateInterval.week(DateTime(2023, 11, 9)),
       );
 
       expect(
         DateInterval.month().subtract(2),
-        DateInterval.month(DateTime.utc(2023, 8, 26)),
+        DateInterval.month(DateTime(2023, 8, 26)),
       );
       expect(
         DateInterval.month().add(2),
-        DateInterval.month(DateTime.utc(2023, 12, 26)),
+        DateInterval.month(DateTime(2023, 12, 26)),
       );
 
       expect(
         DateInterval.year().subtract(2),
-        DateInterval.year(DateTime.utc(2021, 10, 26)),
+        DateInterval.year(DateTime(2021, 10, 26)),
       );
       expect(
         DateInterval.year().add(2),
-        DateInterval.year(DateTime.utc(2025, 10, 26)),
+        DateInterval.year(DateTime(2025, 10, 26)),
       );
     });
   });
@@ -200,7 +200,7 @@ void main() {
     late DateTime now;
 
     setUp(() {
-      now = DateTime.utc(2023, 10, 26);
+      now = DateTime(2023, 10, 26);
       DateInterval.now = () {
         return now;
       };
@@ -213,38 +213,38 @@ void main() {
       expect(DatePeriod.yesterday.start, now.subtract(1.days));
       expect(DatePeriod.yesterday.end, now.subtract(1.microseconds));
 
-      expect(DatePeriod.thisWeek.start, DateTime.utc(2023, 10, 23));
+      expect(DatePeriod.thisWeek.start, DateTime(2023, 10, 23));
       expect(DatePeriod.thisWeek.end,
-          DateTime.utc(2023, 10, 30).subtract(1.microseconds));
+          DateTime(2023, 10, 30).subtract(1.microseconds));
 
-      expect(DatePeriod.lastWeek.start, DateTime.utc(2023, 10, 16));
+      expect(DatePeriod.lastWeek.start, DateTime(2023, 10, 16));
       expect(
         DatePeriod.lastWeek.end,
-        DateTime.utc(2023, 10, 23).subtract(1.microseconds),
+        DateTime(2023, 10, 23).subtract(1.microseconds),
       );
 
-      expect(DatePeriod.thisMonth.start, DateTime.utc(2023, 10));
+      expect(DatePeriod.thisMonth.start, DateTime(2023, 10));
       expect(
         DatePeriod.thisMonth.end,
-        DateTime.utc(2023, 11).subtract(1.microseconds),
+        DateTime(2023, 11).subtract(1.microseconds),
       );
 
-      expect(DatePeriod.lastMonth.start, DateTime.utc(2023, 9));
+      expect(DatePeriod.lastMonth.start, DateTime(2023, 9));
       expect(
         DatePeriod.lastMonth.end,
-        DateTime.utc(2023, 10).subtract(1.microseconds),
+        DateTime(2023, 10).subtract(1.microseconds),
       );
 
-      expect(DatePeriod.thisYear.start, DateTime.utc(2023));
+      expect(DatePeriod.thisYear.start, DateTime(2023));
       expect(
         DatePeriod.thisYear.end,
-        DateTime.utc(2024).subtract(1.microseconds),
+        DateTime(2024).subtract(1.microseconds),
       );
 
-      expect(DatePeriod.lastYear.start, DateTime.utc(2022));
+      expect(DatePeriod.lastYear.start, DateTime(2022));
       expect(
         DatePeriod.lastYear.end,
-        DateTime.utc(2023).subtract(1.microseconds),
+        DateTime(2023).subtract(1.microseconds),
       );
     });
   });

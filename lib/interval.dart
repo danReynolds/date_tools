@@ -24,26 +24,39 @@ class DateInterval {
       : _date = date ?? now() {
     switch (_interval) {
       case _DateIntervals.hour:
-        start = DateTime.utc(_date.year, _date.month, _date.day, _date.hour);
-        end = start.add(1.hours).subtract(_moment);
+        start = DateTime(_date.year, _date.month, _date.day, _date.hour);
+        // End dates are calculated using UTC adjustments so that they are unaffected
+        // by regional differences like DST and then shifted back to local time.
+        end = start
+            .copyWith(hour: start.hour + 1, isUtc: true)
+            .subtract(_moment)
+            .toLocalUnshifted();
       case _DateIntervals.day:
-        start = DateTime.utc(_date.year, _date.month, _date.day);
-        end = start.add(1.days).subtract(_moment);
+        start = DateTime(_date.year, _date.month, _date.day);
+        end = start
+            .copyWith(day: start.day + 1, isUtc: true)
+            .subtract(_moment)
+            .toLocalUnshifted();
       case _DateIntervals.week:
-        start = DateTime.utc(
+        start = DateTime(
           _date.year,
           _date.month,
           _date.day - (_date.weekday - 1),
         );
-        end = start.add(7.days).subtract(_moment);
+        end = start
+            .copyWith(day: start.day + 7)
+            .subtract(_moment)
+            .toLocalUnshifted();
       // Since months and years do not have universal durations,
       // they are adjusted using relative offsets.
       case _DateIntervals.month:
-        start = DateTime.utc(_date.year, _date.month);
-        end = DateTime.utc(_date.year, _date.month + 1).subtract(_moment);
+        start = DateTime(_date.year, _date.month);
+        end = DateTime.utc(start.year, start.month + 1)
+            .subtract(_moment)
+            .toLocalUnshifted();
       case _DateIntervals.year:
-        start = DateTime.utc(_date.year);
-        end = DateTime.utc(_date.year + 1).subtract(_moment);
+        start = DateTime(_date.year);
+        end = DateTime.utc(start.year + 1).subtract(_moment).toLocalUnshifted();
     }
   }
 
