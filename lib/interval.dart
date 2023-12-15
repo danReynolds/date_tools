@@ -1,5 +1,7 @@
 part of date_tools;
 
+typedef DateIntervalBuilder = DateInterval Function([DateTime? date]);
+
 final _moment = 1.microseconds;
 
 enum _DateIntervals {
