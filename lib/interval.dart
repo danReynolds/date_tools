@@ -16,12 +16,12 @@ class DateInterval {
   late final DateTime start;
   late final DateTime end;
 
-  static DateTime Function() now = () {
+  static DateTime Function() currentDate = () {
     return DateTime.now();
   };
 
   DateInterval._fromDate(this._interval, [DateTime? date])
-      : _date = date ?? now() {
+      : _date = date ?? currentDate() {
     switch (_interval) {
       case _DateIntervals.hour:
         start = DateTime(_date.year, _date.month, _date.day, _date.hour);
@@ -113,6 +113,11 @@ class DateInterval {
   }
 
   @override
+  toString() {
+    return "DateInterval(interval: ${_interval.name}, start: $start, end: $end)";
+  }
+
+  @override
   bool operator ==(Object other) {
     if (identical(this, other)) {
       return true;
@@ -153,23 +158,22 @@ class DateInterval {
     }
   }
 
-  /// Returns the number of intervals between [startDate] and [endDate].
-  int difference(DateTime startDate, DateTime endDate) {
-    int count = 0;
-    final startInterval = DateInterval._fromDate(_interval, startDate);
-    final endInterval = DateInterval._fromDate(_interval, endDate);
+  /// Returns an [Iterable] of intervals in the range from this interval until the interval that spans [endDate].
+  Iterable<DateInterval> range(DateTime endDate) {
+    List<DateInterval> intervals = [this];
+    DateInterval currentInterval = this;
+    DateInterval endInterval = DateInterval._fromDate(_interval, endDate);
 
-    DateInterval interval = startInterval;
-
-    while (interval != endInterval) {
-      count++;
-      if (interval.start.isBefore(endInterval.start)) {
-        interval = interval.next();
+    while (currentInterval != endInterval) {
+      if (currentInterval.start.isBefore(endInterval.start)) {
+        currentInterval = currentInterval.next();
       } else {
-        interval = interval.previous();
+        currentInterval = currentInterval.previous();
       }
+
+      intervals.add(currentInterval);
     }
 
-    return count;
+    return intervals;
   }
 }

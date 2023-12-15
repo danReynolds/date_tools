@@ -7,12 +7,21 @@ void main() {
 
     setUp(() {
       now = DateTime(2023, 10, 26);
-      DateInterval.now = () {
+      DateInterval.currentDate = () {
         return now;
       };
     });
 
-    test('has expected start/end dates', () {
+    test("toString", () {
+      final interval = DateInterval.day();
+
+      expect(
+        DateInterval.day().toString(),
+        "DateInterval(interval: day, start: ${interval.start}, end: ${interval.end})",
+      );
+    });
+
+    test('start/end', () {
       expect(DateInterval.hour().start, DateTime(2023, 10, 26));
       expect(
         DateInterval.hour().end,
@@ -44,7 +53,7 @@ void main() {
       );
     });
 
-    test("has expected previous/next intervals", () {
+    test("previous/next", () {
       expect(
         DateInterval.hour().previous(),
         DateInterval.hour(now.subtract(1.hours)),
@@ -91,7 +100,7 @@ void main() {
       );
     });
 
-    test('Generates interval sequences', () {
+    test('generate', () {
       expect(DateInterval.hour().generate(3).toList(), [
         DateInterval.hour(),
         DateInterval.hour(now.add(1.hours)),
@@ -148,7 +157,7 @@ void main() {
       ]);
     });
 
-    test('adds/subtracts intervals correctly', () {
+    test('add/subtract', () {
       expect(
         DateInterval.hour().subtract(2),
         DateInterval.hour(DateTime(2023, 10, 25, 22)),
@@ -194,6 +203,31 @@ void main() {
         DateInterval.year(DateTime(2025, 10, 26)),
       );
     });
+
+    test('spans', () {
+      final interval = DateInterval.month();
+
+      expect(interval.spans(interval.start), true);
+      expect(interval.spans(interval.end), true);
+      expect(interval.spans(interval.end.add(1.microseconds)), false);
+    });
+
+    test('range', () {
+      final interval = DateInterval.day();
+      final future = now.add(2.days);
+      final past = now.subtract(2.days);
+
+      expect(interval.range(future).toList(), [
+        DateInterval.day(),
+        DateInterval.day(now.add(1.days)),
+        DateInterval.day(now.add(2.days)),
+      ]);
+      expect(interval.range(past), [
+        DateInterval.day(),
+        DateInterval.day(now.subtract(1.days)),
+        DateInterval.day(now.subtract(2.days)),
+      ]);
+    });
   });
 
   group('DatePeriod', () {
@@ -201,7 +235,7 @@ void main() {
 
     setUp(() {
       now = DateTime(2023, 10, 26);
-      DateInterval.now = () {
+      DateInterval.currentDate = () {
         return now;
       };
     });

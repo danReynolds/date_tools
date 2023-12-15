@@ -1,3 +1,7 @@
+## 0.0.4
+
+Add [range] API.
+
 ## 0.0.3
 
 As all Date libraries must, we now account for DST.
