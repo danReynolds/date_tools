@@ -82,6 +82,21 @@ class DateInterval {
     return DateInterval._fromDate(_DateIntervals.year, relativeDate);
   }
 
+  DateIntervalBuilder get builder {
+    switch (_interval) {
+      case _DateIntervals.hour:
+        return DateInterval.hour;
+      case _DateIntervals.day:
+        return DateInterval.day;
+      case _DateIntervals.week:
+        return DateInterval.week;
+      case _DateIntervals.month:
+        return DateInterval.month;
+      case _DateIntervals.year:
+        return DateInterval.year;
+    }
+  }
+
   DateInterval previous() {
     return DateInterval._fromDate(_interval, start.subtract(1.microseconds));
   }

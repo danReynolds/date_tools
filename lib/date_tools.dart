@@ -4,4 +4,3 @@ part 'extensions/iterable.dart';
 part 'extensions/num.dart';
 part 'extensions/date.dart';
 part 'interval.dart';
-part 'period.dart';
