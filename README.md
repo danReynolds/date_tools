@@ -31,16 +31,4 @@ print(DateInterval.month(now).spans(now)); // true
 print(DateInterval.month(now).subtract(1).spans(now)); // false
 ```
 
-### Date Periods
-
-The [DatePeriod] enum exposes common date periods like the current week, month and year.
-
-```dart
-print(DatePeriod.today.start) // DateTime:<2023-10-26 00:00:00.000000Z>
-print(DatePeriod.today.end) // DateTime:<2023-10-26 23:59:59.999999Z>
-
-print(DatePeriod.thisWeek.contains(DateTime(2023, 10, 26))) // true
-print(DatePeriod.lastWeek.contains(DateTime(2023, 10, 26))) // false
-```
-
 More tools will be added in the future. Happy coding!
