@@ -1,6 +1,6 @@
 # Date Tools
 
-Tools for working with dates including a [DateInterval] and [DatePeriod] implementation.
+Tools for working with dates. Currently just a [DateInterval] implementation.
 
 ### Date Intervals
 
