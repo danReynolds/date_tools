@@ -1,3 +1,7 @@
+## 0.0.5
+
+Bump version.
+
 ## 0.0.4
 
 Add [range] API.
