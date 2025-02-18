@@ -1,5 +1,5 @@
 name: date_tools
-description: Tools for managing dates including a DateInterval and DatePeriod implementation.
+description: Tools for managing dates including a DateInterval implementation.
 version: 0.0.4
 homepage: https://github.com/danReynolds/date_tools
 
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.18.1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
