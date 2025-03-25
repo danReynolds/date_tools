@@ -15,4 +15,8 @@ extension DateTimeExtensions on DateTime {
       microsecond,
     );
   }
+
+  bool isSameDayAs(DateTime other) {
+    return DateInterval.day(this) == DateInterval.day(other);
+  }
 }

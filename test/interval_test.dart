@@ -40,6 +40,12 @@ void main() {
         DateTime(2023, 10, 30).subtract(1.microseconds),
       );
 
+      expect(DateInterval.biweek().start, DateTime(2023, 10, 23));
+      expect(
+        DateInterval.biweek().end,
+        DateTime(2023, 11, 6).subtract(1.microseconds),
+      );
+
       expect(DateInterval.month().start, DateTime(2023, 10));
       expect(
         DateInterval.month().end,

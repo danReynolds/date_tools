@@ -8,6 +8,7 @@ enum _DateIntervals {
   hour,
   day,
   week,
+  biweek,
   month,
   year,
 }
@@ -49,6 +50,16 @@ class DateInterval {
             .copyWith(day: start.day + 7)
             .subtract(_moment)
             .toLocalUnshifted();
+      case _DateIntervals.biweek:
+        start = DateTime(
+          _date.year,
+          _date.month,
+          _date.day - (_date.weekday - 1),
+        );
+        end = start
+            .copyWith(day: start.day + 14)
+            .subtract(_moment)
+            .toLocalUnshifted();
       // Since months and years do not have universal durations,
       // they are adjusted using relative offsets.
       case _DateIntervals.month:
@@ -74,6 +85,10 @@ class DateInterval {
     return DateInterval._fromDate(_DateIntervals.week, relativeDate);
   }
 
+  factory DateInterval.biweek([DateTime? relativeDate]) {
+    return DateInterval._fromDate(_DateIntervals.biweek, relativeDate);
+  }
+
   factory DateInterval.month([DateTime? relativeDate]) {
     return DateInterval._fromDate(_DateIntervals.month, relativeDate);
   }
@@ -90,6 +105,8 @@ class DateInterval {
         return DateInterval.day;
       case _DateIntervals.week:
         return DateInterval.week;
+      case _DateIntervals.biweek:
+        return DateInterval.biweek;
       case _DateIntervals.month:
         return DateInterval.month;
       case _DateIntervals.year:
