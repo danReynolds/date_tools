@@ -1,14 +1,18 @@
+## 0.1.0
+
+* Add [DateSchedule] API.
+
 ## 0.0.5
 
-Bump version.
+* Bump version.
 
 ## 0.0.4
 
-Add [range] API.
+* Add [range] API.
 
 ## 0.0.3
 
-As all Date libraries must, we now account for DST.
+* As all Date libraries must, we now account for DST.
 
 ## 0.0.2
 

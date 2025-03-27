@@ -451,8 +451,70 @@ void main() {
     },
   );
 
+  test(
+    'Range',
+    () {
+      final now = DateTime(2025, 03, 25);
+
+      expect(
+        DateSchedule.yearly(months: [1, 6, 10], days: [1, 2])
+            .range(start: now, end: DateTime(2025, 12, 31)),
+        [
+          DateTime(2025, 6, 1),
+          DateTime(2025, 6, 2),
+          DateTime(2025, 10, 1),
+          DateTime(2025, 10, 2),
+        ],
+      );
+
+      expect(
+        DateSchedule.monthly(weekdays: [1, 5])
+            .range(start: now, end: DateTime(2025, 04, 30)),
+        [
+          DateTime(2025, 3, 28),
+          DateTime(2025, 3, 31),
+          DateTime(2025, 4, 4),
+          DateTime(2025, 4, 7),
+          DateTime(2025, 4, 11),
+          DateTime(2025, 4, 14),
+          DateTime(2025, 4, 18),
+          DateTime(2025, 4, 21),
+          DateTime(2025, 4, 25),
+          DateTime(2025, 4, 28),
+        ],
+      );
+
+      expect(
+        DateSchedule.weekly(weekdays: [2])
+            .range(start: now, end: DateTime(2025, 04, 30)),
+        [
+          DateTime(2025, 3, 25),
+          DateTime(2025, 4, 1),
+          DateTime(2025, 4, 8),
+          DateTime(2025, 4, 15),
+          DateTime(2025, 4, 22),
+          DateTime(2025, 4, 29),
+        ],
+      );
+
+      expect(
+        DateSchedule.daily().range(start: now, end: now.add(7.days)),
+        [
+          DateTime(2025, 3, 25),
+          DateTime(2025, 3, 26),
+          DateTime(2025, 3, 27),
+          DateTime(2025, 3, 28),
+          DateTime(2025, 3, 29),
+          DateTime(2025, 3, 30),
+          DateTime(2025, 3, 31),
+          DateTime(2025, 4, 1),
+        ],
+      );
+    },
+  );
+
   group(
-    'Readme examples',
+    'README examples',
     () {
       final now = DateTime(2025, 1, 1); // Wednesday January 1st, 2025.
 
