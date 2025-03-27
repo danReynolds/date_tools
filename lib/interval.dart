@@ -32,44 +32,35 @@ class DateInterval {
         // by regional differences like DST and then shifted back to local time.
         end = start
             .copyWith(hour: start.hour + 1, isUtc: true)
-            .subtract(_moment)
-            .toLocalUnshifted();
+            .subtractUnshifted(_moment);
       case _DateIntervals.day:
         start = DateTime(_date.year, _date.month, _date.day);
         end = start
             .copyWith(day: start.day + 1, isUtc: true)
-            .subtract(_moment)
-            .toLocalUnshifted();
+            .subtractUnshifted(_moment);
       case _DateIntervals.week:
         start = DateTime(
           _date.year,
           _date.month,
           _date.day - (_date.weekday - 1),
         );
-        end = start
-            .copyWith(day: start.day + 7)
-            .subtract(_moment)
-            .toLocalUnshifted();
+        end = start.copyWith(day: start.day + 7).subtractUnshifted(_moment);
       case _DateIntervals.biweek:
         start = DateTime(
           _date.year,
           _date.month,
           _date.day - (_date.weekday - 1),
         );
-        end = start
-            .copyWith(day: start.day + 14)
-            .subtract(_moment)
-            .toLocalUnshifted();
+        end = start.copyWith(day: start.day + 14).subtractUnshifted(_moment);
       // Since months and years do not have universal durations,
       // they are adjusted using relative offsets.
       case _DateIntervals.month:
         start = DateTime(_date.year, _date.month);
         end = DateTime.utc(start.year, start.month + 1)
-            .subtract(_moment)
-            .toLocalUnshifted();
+            .subtractUnshifted(_moment);
       case _DateIntervals.year:
         start = DateTime(_date.year);
-        end = DateTime.utc(start.year + 1).subtract(_moment).toLocalUnshifted();
+        end = DateTime.utc(start.year + 1).subtractUnshifted(_moment);
     }
   }
 

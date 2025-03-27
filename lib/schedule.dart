@@ -11,45 +11,31 @@ enum DateSchedulePeriods {
   }
 }
 
-enum _Direction {
-  forward,
-  backward,
-}
-
-class DateSchedule {
+abstract class DateSchedule {
   final DateSchedulePeriods period;
   final int interval;
-  final DateTime _date;
 
-  DateSchedule(
-    this._date, {
+  DateSchedule({
     required this.period,
-    final int? interval,
+    int? interval,
   }) : interval = interval ?? 1;
 
   static YearlyDateSchedule yearly({
-    DateTime? date,
+    DateTime? startDate,
     required List<int> months,
     required List<int> days,
     int? interval,
   }) {
-    return YearlyDateSchedule(
-      date ?? DateTime.now(),
-      interval: interval,
-      months: months,
-      days: days,
-    );
+    return YearlyDateSchedule(interval: interval, months: months, days: days);
   }
 
   static MonthlyDateSchedule monthly({
-    DateTime? date,
     List<int>? days,
     List<int>? weekdays,
     List<int>? nthWeekdays,
     int? interval,
   }) {
     return MonthlyDateSchedule(
-      date ?? DateTime.now(),
       interval: interval,
       days: days,
       weekdays: weekdays,
@@ -58,142 +44,40 @@ class DateSchedule {
   }
 
   static WeeklyDateSchedule weekly({
-    DateTime? date,
     required List<int> weekdays,
     int? interval,
   }) {
-    return WeeklyDateSchedule(
-      date ?? DateTime.now(),
-      interval: interval,
-      weekdays: weekdays,
-    );
+    return WeeklyDateSchedule(interval: interval, weekdays: weekdays);
   }
 
   static DailyDateSchedule daily({
-    DateTime? date,
     int? interval,
   }) {
-    return DailyDateSchedule(date ?? DateTime.now(), interval: interval);
+    return DailyDateSchedule(interval: interval);
   }
 
-  Iterable<DateTime> _shift(_Direction direction) sync* {
-    final isBackward = direction == _Direction.backward;
-    final directionModifier = isBackward ? -1 : 1;
-    final interval = this.interval * directionModifier;
+  Iterable<DateTime> _prev(DateTime relativeDate);
+  Iterable<DateTime> _next(DateTime relativeDate);
 
-    switch (this) {
-      case YearlyDateSchedule schedule:
-        final YearlyDateSchedule(:months, :days) = schedule;
-
-        var currentYear = DateInterval.year(_date);
-        while (true) {
-          final startOfYear = currentYear.start;
-
-          for (final month in months.reversedIf(isBackward)) {
-            for (final day in days.reversedIf(isBackward)) {
-              yield DateTime(startOfYear.year, month, day);
-            }
-          }
-
-          currentYear = currentYear.add(interval);
-        }
-      case MonthlyDateSchedule schedule:
-        final MonthlyDateSchedule(:days, :weekdays, :nthWeekdays) = schedule;
-
-        while (true) {
-          var currentMonth = DateInterval.month(_date);
-          final startOfMonth = currentMonth.start;
-          final endOfMonth = currentMonth.end;
-
-          if (days != null) {
-            for (final day in days.reversedIf(isBackward)) {
-              yield DateTime(startOfMonth.year, startOfMonth.month, day);
-            }
-          } else if (nthWeekdays != null) {
-            final firstWeekOfMonth = DateInterval.week(startOfMonth);
-
-            while (true) {
-              for (final nthWeekday in nthWeekdays.reversedIf(isBackward)) {
-                for (final weekday in weekdays!.reversedIf(isBackward)) {
-                  int firstOccurenceDay =
-                      firstWeekOfMonth.start.day + weekday - 1;
-
-                  if (firstOccurenceDay < 1) {
-                    firstOccurenceDay += 7;
-                  }
-
-                  final nthOcurrencyDay =
-                      firstOccurenceDay + (nthWeekday - 1) * 7;
-
-                  if (nthOcurrencyDay >= 1 &&
-                      nthOcurrencyDay < endOfMonth.day) {
-                    yield DateTime(
-                      startOfMonth.year,
-                      startOfMonth.month,
-                      nthOcurrencyDay,
-                    );
-                  }
-                }
-              }
-            }
-          } else if (weekdays != null) {
-            var currentWeek = DateInterval.week(
-              isBackward ? currentMonth.end : currentMonth.start,
-            );
-
-            while (true) {
-              for (final weekday in weekdays.reversedIf(isBackward)) {
-                final date = currentWeek.start.add((weekday - 1).days);
-
-                if (currentMonth.spans(date)) {
-                  yield date;
-                }
-              }
-
-              currentWeek = currentWeek.add(directionModifier);
-
-              if (!currentMonth.spans(currentWeek.start) &&
-                  !currentMonth.spans(currentWeek.end)) {
-                break;
-              }
-            }
-          }
-
-          currentMonth = currentMonth.add(interval);
-        }
-      case WeeklyDateSchedule schedule:
-        final WeeklyDateSchedule(:weekdays) = schedule;
-        var currentWeek = DateInterval.week(_date);
-
-        while (true) {
-          for (final weekday in weekdays.reversedIf(isBackward)) {
-            final date = currentWeek.start.add((weekday - 1).days);
-            yield date;
-          }
-
-          currentWeek = currentWeek.add(interval);
-        }
-      case DailyDateSchedule _:
-        var currentDay = DateInterval.day(_date);
-
-        while (true) {
-          yield currentDay.start;
-          currentDay = currentDay.add(interval);
-        }
+  Iterable<DateTime> range({
+    required DateTime start,
+    required DateTime end,
+    bool ascending = true,
+  }) {
+    if (ascending) {
+      return _next(start).takeWhile((date) => date.isSameDayOrBefore(end));
     }
+    return _prev(end).takeWhile((date) => date.isSameDayOrAfter(start));
   }
 
-  Iterable<DateTime> get prev => _shift(_Direction.backward)
-      .where((date) => date.isSameDayAs(_date) || date.isBefore(_date));
-  Iterable<DateTime> get next => _shift(_Direction.forward)
-      .where((date) => date.isSameDayAs(_date) || date.isAfter(_date));
-
-  List<DateTime> generate(int count) {
-    return switch (count) {
-      < 0 => prev.take(-count).toList(),
-      > 0 => next.take(count).toList(),
-      _ => [],
-    };
+  Iterable<DateTime> start(
+    DateTime startDate, {
+    bool ascending = true,
+  }) {
+    if (ascending) {
+      return _next(startDate);
+    }
+    return _prev(startDate);
   }
 }
 
@@ -201,12 +85,57 @@ class YearlyDateSchedule extends DateSchedule {
   final List<int> months;
   final List<int> days;
 
-  YearlyDateSchedule(
-    super._date, {
+  YearlyDateSchedule({
     super.interval,
     required this.months,
     required this.days,
   }) : super(period: DateSchedulePeriods.yearly);
+
+  @override
+  _prev(relativeDate) sync* {
+    var currentYear = DateInterval.year(relativeDate);
+
+    while (true) {
+      final startOfYear = currentYear.start;
+
+      for (var month in months.reversed) {
+        for (var day in days.reversed) {
+          final date = day == -1
+              ? DateTime(startOfYear.year, month + 1, 0)
+              : DateTime(startOfYear.year, month, day);
+
+          if (date.isSameDayOrBefore(relativeDate)) {
+            yield date;
+          }
+        }
+      }
+
+      currentYear = currentYear.subtract(interval);
+    }
+  }
+
+  @override
+  _next(relativeDate) sync* {
+    var currentYear = DateInterval.year(relativeDate);
+
+    while (true) {
+      final startOfYear = currentYear.start;
+
+      for (var month in months) {
+        for (var day in days) {
+          final date = day == -1
+              ? DateTime(startOfYear.year, month + 1, 0)
+              : DateTime(startOfYear.year, month, day);
+
+          if (date.isSameDayOrAfter(relativeDate)) {
+            yield date;
+          }
+        }
+      }
+
+      currentYear = currentYear.add(interval);
+    }
+  }
 }
 
 class MonthlyDateSchedule extends DateSchedule {
@@ -214,28 +143,231 @@ class MonthlyDateSchedule extends DateSchedule {
   final List<int>? weekdays;
   final List<int>? nthWeekdays;
 
-  MonthlyDateSchedule(
-    super._date, {
+  MonthlyDateSchedule({
     super.interval,
     this.days,
     this.weekdays,
     this.nthWeekdays,
   }) : super(period: DateSchedulePeriods.monthly);
+
+  @override
+  _prev(relativeDate) sync* {
+    final MonthlyDateSchedule(:days, :weekdays, :nthWeekdays) = this;
+    var currentMonth = DateInterval.month(relativeDate);
+
+    while (true) {
+      final DateInterval(start: startOfMonth, end: endOfMonth) = currentMonth;
+
+      if (nthWeekdays != null) {
+        for (var nthWeekday in nthWeekdays.reversed) {
+          for (final weekday in weekdays!.reversed) {
+            if (nthWeekday == -1) {
+              final lastWeekOfMonth = DateInterval.week(endOfMonth);
+              var date = lastWeekOfMonth.start.addUnshifted((weekday - 1).days);
+
+              if (!currentMonth.spans(date)) {
+                date = date.subtractUnshifted(7.days);
+              }
+
+              if (date.isSameDayOrBefore(relativeDate)) {
+                yield date;
+              }
+            } else {
+              final firstWeekOfMonth = DateInterval.week(startOfMonth);
+              var firstOccurrenceDate =
+                  firstWeekOfMonth.start.addUnshifted((weekday - 1).days);
+              if (!currentMonth.spans(firstOccurrenceDate)) {
+                firstOccurrenceDate = firstOccurrenceDate.addUnshifted(7.days);
+              }
+
+              final nthOcurrencyDay =
+                  firstOccurrenceDate.day + (nthWeekday - 1) * 7;
+              if (nthOcurrencyDay <= endOfMonth.day) {
+                final date = DateTime(
+                  startOfMonth.year,
+                  startOfMonth.month,
+                  nthOcurrencyDay,
+                );
+                if (date.isSameDayOrBefore(relativeDate)) {
+                  yield date;
+                }
+              }
+            }
+          }
+        }
+      } else if (weekdays != null) {
+        var currentWeek = DateInterval.week(relativeDate);
+
+        while (true) {
+          for (var weekday in weekdays.reversed) {
+            final date = currentWeek.start.addUnshifted((weekday - 1).days);
+            if (currentMonth.spans(date) &&
+                date.isSameDayOrBefore(relativeDate)) {
+              yield date;
+            }
+          }
+
+          currentWeek = currentWeek.previous();
+          if (currentWeek.end.isBefore(currentMonth.start)) {
+            break;
+          }
+        }
+      } else if (days != null) {
+        for (var day in days.reversed) {
+          final date = day == -1
+              ? DateTime(startOfMonth.year, startOfMonth.month + 1, 0)
+              : DateTime(startOfMonth.year, startOfMonth.month, day);
+
+          if (date.isSameDayOrBefore(relativeDate)) {
+            yield date;
+          }
+        }
+      }
+
+      currentMonth = currentMonth.subtract(interval);
+    }
+  }
+
+  @override
+  _next(relativeDate) sync* {
+    final MonthlyDateSchedule(:days, :weekdays, :nthWeekdays) = this;
+    var currentMonth = DateInterval.month(relativeDate);
+
+    while (true) {
+      final DateInterval(start: startOfMonth, end: endOfMonth) = currentMonth;
+
+      if (nthWeekdays != null) {
+        for (var nthWeekday in nthWeekdays) {
+          for (final weekday in weekdays!) {
+            if (nthWeekday == -1) {
+              final lastWeekOfMonth = DateInterval.week(endOfMonth);
+              var date = lastWeekOfMonth.start.addUnshifted((weekday - 1).days);
+
+              if (!currentMonth.spans(date)) {
+                date = date.subtractUnshifted(7.days);
+              }
+
+              if (date.isSameDayOrAfter(relativeDate)) {
+                yield date;
+              }
+            } else {
+              final firstWeekOfMonth = DateInterval.week(startOfMonth);
+              var firstOccurrenceDate =
+                  firstWeekOfMonth.start.addUnshifted((weekday - 1).days);
+              if (!currentMonth.spans(firstOccurrenceDate)) {
+                firstOccurrenceDate = firstOccurrenceDate.addUnshifted(7.days);
+              }
+
+              final nthOcurrencyDay =
+                  firstOccurrenceDate.day + (nthWeekday - 1) * 7;
+              if (nthOcurrencyDay <= endOfMonth.day) {
+                final date = DateTime(
+                  startOfMonth.year,
+                  startOfMonth.month,
+                  nthOcurrencyDay,
+                );
+                if (date.isSameDayOrAfter(relativeDate)) {
+                  yield date;
+                }
+              }
+            }
+          }
+        }
+      } else if (weekdays != null) {
+        var currentWeek = DateInterval.week(relativeDate);
+
+        while (true) {
+          for (var weekday in weekdays) {
+            final date = currentWeek.start.addUnshifted((weekday - 1).days);
+            if (date.isSameDayOrAfter(relativeDate) &&
+                currentMonth.spans(date)) {
+              yield date;
+            }
+          }
+
+          currentWeek = currentWeek.next();
+          if (currentWeek.start.isAfter(currentMonth.end)) {
+            break;
+          }
+        }
+      } else if (days != null) {
+        for (final day in days) {
+          final date = day == -1
+              ? DateTime(startOfMonth.year, startOfMonth.month + 1, 0)
+              : DateTime(startOfMonth.year, startOfMonth.month, day);
+
+          if (date.isSameDayOrAfter(relativeDate)) {
+            yield date;
+          }
+        }
+      }
+
+      currentMonth = currentMonth.add(interval);
+    }
+  }
 }
 
 class WeeklyDateSchedule extends DateSchedule {
   final List<int> weekdays;
 
-  WeeklyDateSchedule(
-    super._date, {
+  WeeklyDateSchedule({
     super.interval,
     required this.weekdays,
   }) : super(period: DateSchedulePeriods.weekly);
+
+  @override
+  _prev(relativeDate) sync* {
+    var currentWeek = DateInterval.week(relativeDate);
+
+    while (true) {
+      for (final weekday in weekdays.reversed) {
+        final date = currentWeek.start.add((weekday - 1).days);
+        if (date.isSameDayOrBefore(relativeDate)) {
+          yield date;
+        }
+      }
+      currentWeek = currentWeek.subtract(interval);
+    }
+  }
+
+  @override
+  _next(relativeDate) sync* {
+    var currentWeek = DateInterval.week(relativeDate);
+
+    while (true) {
+      for (final weekday in weekdays) {
+        final date = currentWeek.start.add((weekday - 1).days);
+        if (date.isSameDayOrAfter(relativeDate)) {
+          yield date;
+        }
+      }
+      currentWeek = currentWeek.add(interval);
+    }
+  }
 }
 
 class DailyDateSchedule extends DateSchedule {
-  DailyDateSchedule(
-    super._date, {
+  DailyDateSchedule({
     super.interval,
   }) : super(period: DateSchedulePeriods.daily);
+
+  @override
+  _prev(relativeDate) sync* {
+    var currentDay = DateInterval.day(relativeDate);
+
+    while (true) {
+      yield currentDay.start;
+      currentDay = currentDay.subtract(interval);
+    }
+  }
+
+  @override
+  _next(relativeDate) sync* {
+    var currentDay = DateInterval.day(relativeDate);
+
+    while (true) {
+      yield currentDay.start;
+      currentDay = currentDay.add(interval);
+    }
+  }
 }
