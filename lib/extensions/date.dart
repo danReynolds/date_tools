@@ -45,6 +45,26 @@ extension DateTimeExtensions on DateTime {
     return day == other.day && month == other.month && year == other.year;
   }
 
+  bool isSameWeekAs(DateTime other) {
+    return DateInterval.week(this) == DateInterval.week(other);
+  }
+
+  bool isSameMonthAs(DateTime other) {
+    return DateInterval.month(this) == DateInterval.month(other);
+  }
+
+  bool isSameYearAs(DateTime other) {
+    return DateInterval.year(this) == DateInterval.year(other);
+  }
+
+  bool isSameOrBefore(DateTime other) {
+    return this == other || isBefore(other);
+  }
+
+  bool isSameOrAfter(DateTime other) {
+    return this == other || isAfter(other);
+  }
+
   bool isSameDayOrBefore(DateTime other) {
     return isBefore(other) || isSameDayAs(other);
   }

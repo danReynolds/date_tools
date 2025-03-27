@@ -89,7 +89,9 @@ class YearlyDateSchedule extends DateSchedule {
     super.interval,
     required this.months,
     required this.days,
-  }) : super(period: DateSchedulePeriods.yearly);
+  }) : super(period: DateSchedulePeriods.yearly) {
+    assert(isValidDayRange(days) && isValidMonthRange(months));
+  }
 
   @override
   _prev(relativeDate) sync* {
@@ -98,8 +100,8 @@ class YearlyDateSchedule extends DateSchedule {
     while (true) {
       final startOfYear = currentYear.start;
 
-      for (var month in months.reversed) {
-        for (var day in days.reversed) {
+      for (final month in months.reversed) {
+        for (final day in days.reversed) {
           final date = day == -1
               ? DateTime(startOfYear.year, month + 1, 0)
               : DateTime(startOfYear.year, month, day);
@@ -121,8 +123,8 @@ class YearlyDateSchedule extends DateSchedule {
     while (true) {
       final startOfYear = currentYear.start;
 
-      for (var month in months) {
-        for (var day in days) {
+      for (final month in months) {
+        for (final day in days) {
           final date = day == -1
               ? DateTime(startOfYear.year, month + 1, 0)
               : DateTime(startOfYear.year, month, day);
@@ -148,7 +150,14 @@ class MonthlyDateSchedule extends DateSchedule {
     this.days,
     this.weekdays,
     this.nthWeekdays,
-  }) : super(period: DateSchedulePeriods.monthly);
+  }) : super(period: DateSchedulePeriods.monthly) {
+    assert(days != null || weekdays != null);
+    assert(
+      isValidDayRange(days) &&
+          isValidWeekdayRange(weekdays) &&
+          isValidNthWeekdayRange(nthWeekdays),
+    );
+  }
 
   @override
   _prev(relativeDate) sync* {
@@ -159,12 +168,12 @@ class MonthlyDateSchedule extends DateSchedule {
       final DateInterval(start: startOfMonth, end: endOfMonth) = currentMonth;
 
       if (nthWeekdays != null) {
-        for (var nthWeekday in nthWeekdays.reversed) {
+        for (final nthWeekday in nthWeekdays.reversed) {
           for (final weekday in weekdays!.reversed) {
             if (nthWeekday == -1) {
               final lastWeekOfMonth = DateInterval.week(endOfMonth);
-              var date = lastWeekOfMonth.start.addUnshifted((weekday - 1).days);
 
+              var date = lastWeekOfMonth.start.addUnshifted((weekday - 1).days);
               if (!currentMonth.spans(date)) {
                 date = date.subtractUnshifted(7.days);
               }
@@ -199,7 +208,7 @@ class MonthlyDateSchedule extends DateSchedule {
         var currentWeek = DateInterval.week(relativeDate);
 
         while (true) {
-          for (var weekday in weekdays.reversed) {
+          for (final weekday in weekdays.reversed) {
             final date = currentWeek.start.addUnshifted((weekday - 1).days);
             if (currentMonth.spans(date) &&
                 date.isSameDayOrBefore(relativeDate)) {
@@ -213,7 +222,7 @@ class MonthlyDateSchedule extends DateSchedule {
           }
         }
       } else if (days != null) {
-        for (var day in days.reversed) {
+        for (final day in days.reversed) {
           final date = day == -1
               ? DateTime(startOfMonth.year, startOfMonth.month + 1, 0)
               : DateTime(startOfMonth.year, startOfMonth.month, day);
@@ -237,7 +246,7 @@ class MonthlyDateSchedule extends DateSchedule {
       final DateInterval(start: startOfMonth, end: endOfMonth) = currentMonth;
 
       if (nthWeekdays != null) {
-        for (var nthWeekday in nthWeekdays) {
+        for (final nthWeekday in nthWeekdays) {
           for (final weekday in weekdays!) {
             if (nthWeekday == -1) {
               final lastWeekOfMonth = DateInterval.week(endOfMonth);
@@ -313,7 +322,8 @@ class WeeklyDateSchedule extends DateSchedule {
   WeeklyDateSchedule({
     super.interval,
     required this.weekdays,
-  }) : super(period: DateSchedulePeriods.weekly);
+  })  : assert(isValidWeekdayRange(weekdays)),
+        super(period: DateSchedulePeriods.weekly);
 
   @override
   _prev(relativeDate) sync* {
