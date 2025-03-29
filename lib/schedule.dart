@@ -59,9 +59,9 @@ abstract class DateSchedule {
   Iterable<DateTime> _prev(DateTime relativeDate);
   Iterable<DateTime> _next(DateTime relativeDate);
 
-  Iterable<DateTime> range({
-    required DateTime start,
-    required DateTime end,
+  Iterable<DateTime> range(
+    DateTime start,
+    DateTime end, {
     bool ascending = true,
   }) {
     if (ascending) {

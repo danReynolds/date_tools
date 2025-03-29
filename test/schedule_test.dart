@@ -458,7 +458,7 @@ void main() {
 
       expect(
         DateSchedule.yearly(months: [1, 6, 10], days: [1, 2])
-            .range(start: now, end: DateTime(2025, 12, 31)),
+            .range(now, DateTime(2025, 12, 31)),
         [
           DateTime(2025, 6, 1),
           DateTime(2025, 6, 2),
@@ -469,7 +469,7 @@ void main() {
 
       expect(
         DateSchedule.monthly(weekdays: [1, 5])
-            .range(start: now, end: DateTime(2025, 04, 30)),
+            .range(now, DateTime(2025, 04, 30)),
         [
           DateTime(2025, 3, 28),
           DateTime(2025, 3, 31),
@@ -485,8 +485,7 @@ void main() {
       );
 
       expect(
-        DateSchedule.weekly(weekdays: [2])
-            .range(start: now, end: DateTime(2025, 04, 30)),
+        DateSchedule.weekly(weekdays: [2]).range(now, DateTime(2025, 04, 30)),
         [
           DateTime(2025, 3, 25),
           DateTime(2025, 4, 1),
@@ -498,7 +497,7 @@ void main() {
       );
 
       expect(
-        DateSchedule.daily().range(start: now, end: now.add(7.days)),
+        DateSchedule.daily().range(now, now.add(7.days)),
         [
           DateTime(2025, 3, 25),
           DateTime(2025, 3, 26),
