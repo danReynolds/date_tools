@@ -60,14 +60,16 @@ abstract class DateSchedule {
   Iterable<DateTime> _next(DateTime relativeDate);
 
   Iterable<DateTime> range(
-    DateTime start,
-    DateTime end, {
+    DateTime startDate,
+    DateTime endDate, {
     bool ascending = true,
   }) {
     if (ascending) {
-      return _next(start).takeWhile((date) => date.isSameDayOrBefore(end));
+      return _next(startDate).takeWhile(
+        (date) => date.isSameDayOrBefore(endDate),
+      );
     }
-    return _prev(end).takeWhile((date) => date.isSameDayOrAfter(start));
+    return _prev(endDate).takeWhile((date) => date.isSameDayOrAfter(startDate));
   }
 
   Iterable<DateTime> start(
