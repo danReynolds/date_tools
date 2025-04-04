@@ -201,4 +201,12 @@ class DateInterval {
 
     return intervals;
   }
+
+  bool get isPast {
+    return end.isBefore(DateTime.now());
+  }
+
+  bool get isFuture {
+    return start.isAfter(DateTime.now());
+  }
 }
