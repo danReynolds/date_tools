@@ -9,8 +9,8 @@ bool isValidWeekdayRange(List<int>? weekdays) {
 }
 
 bool isValidNthWeekdayRange(List<int>? nthWeekdays) {
-  return nthWeekdays
-          ?.every((nthWeekday) => (nthWeekday >= 1 && nthWeekday <= 5)) ??
+  return nthWeekdays?.every((nthWeekday) =>
+          (nthWeekday == -1 || nthWeekday >= 1 && nthWeekday <= 5)) ??
       true;
 }
 
