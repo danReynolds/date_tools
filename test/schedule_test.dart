@@ -1,4 +1,5 @@
 import 'package:date_tools/date_tools.dart';
+import 'package:date_tools/extensions/list.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -448,6 +449,99 @@ void main() {
           );
         },
       );
+
+      test(
+        'Fixed schedule',
+        () {
+          // Basic test
+          expect(
+            DateSchedule.fixed([
+              DateTime(2025, 3, 25),
+              DateTime(2025, 3, 26),
+              DateTime(2025, 3, 27),
+              DateTime(2025, 3, 29),
+              DateTime(2025, 5, 31),
+            ]).start(now).take(5),
+            [
+              DateTime(2025, 3, 25),
+              DateTime(2025, 3, 26),
+              DateTime(2025, 3, 27),
+              DateTime(2025, 3, 29),
+              DateTime(2025, 5, 31),
+            ],
+          );
+
+          // Descending test
+          expect(
+            DateSchedule.fixed([
+              DateTime(2025, 3, 25),
+              DateTime(2025, 3, 26),
+              DateTime(2025, 3, 27),
+              DateTime(2025, 3, 29),
+              DateTime(2025, 5, 31),
+            ]).start(DateTime(2025, 6, 01), ascending: false).take(5),
+            [
+              DateTime(2025, 5, 31),
+              DateTime(2025, 3, 29),
+              DateTime(2025, 3, 27),
+              DateTime(2025, 3, 26),
+              DateTime(2025, 3, 25),
+            ],
+          );
+        },
+      );
+
+      test(
+        'Combined schedule',
+        () {
+          expect(
+            DateSchedule.merge([
+              DateSchedule.yearly(months: [4], days: [2, 5]),
+              DateSchedule.monthly(days: [2, 9, 10]),
+              DateSchedule.weekly(weekdays: [4]),
+            ]).start(now).take(7),
+            [
+              // Yearly dates
+              DateTime(2025, 4, 2),
+              DateTime(2025, 4, 5),
+              // Monthly dates
+              DateTime(2025, 4, 2), // De-duped with the yearly date
+              DateTime(2025, 4, 9),
+              DateTime(2025, 4, 10),
+              // Weekly dates
+              DateTime(2025, 3, 27),
+              DateTime(2025, 4, 3),
+              DateTime(2025, 4, 10), // De-duped with the monthly date
+              DateTime(2025, 4, 17),
+            ].distinct
+              ..sort(),
+          );
+
+          expect(
+            DateSchedule.merge([
+              DateSchedule.yearly(months: [2], days: [20, 25]),
+              DateSchedule.monthly(days: [13, 20, 24]),
+              DateSchedule.weekly(weekdays: [4]),
+            ]).start(now, ascending: false).take(9),
+            [
+              // Yearly dates
+              DateTime(2025, 2, 25),
+              DateTime(2025, 2, 20),
+              // Monthly dates
+              DateTime(2025, 3, 24),
+              DateTime(2025, 2, 24),
+              DateTime(2025, 2, 20), // De-duped with the yearly date
+              DateTime(2025, 2, 13),
+              // Weekly dates
+              DateTime(2025, 3, 20),
+              DateTime(2025, 3, 13),
+              DateTime(2025, 3, 6),
+              DateTime(2025, 2, 27),
+            ].distinct
+              ..sort((a, b) => b.compareTo(a)),
+          );
+        },
+      );
     },
   );
 
@@ -611,6 +705,23 @@ void main() {
           );
         },
       );
+
+      test('Merged schedule', () {
+        expect(
+          DateSchedule.merge([
+            DateSchedule.yearly(months: [1], days: [10, 15]),
+            DateSchedule.monthly(days: [2, 9, 10]),
+            DateSchedule.fixed([DateTime(2025, 1, 15), DateTime(2025, 1, 16)]),
+          ]).start(now).take(5),
+          [
+            DateTime(2025, 1, 2),
+            DateTime(2025, 1, 9),
+            DateTime(2025, 1, 10),
+            DateTime(2025, 1, 15),
+            DateTime(2025, 1, 16),
+          ],
+        );
+      });
     },
   );
 }
