@@ -2,13 +2,10 @@ part of date_tools;
 
 extension IterableExtensions<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T item) predicate) {
-    try {
-      return firstWhere(predicate);
-    } on StateError catch (e) {
-      if (e.message == 'No element') {
-        return null;
-      }
-      rethrow;
+    final result = where(predicate).take(1);
+    if (result.isEmpty) {
+      return null;
     }
+    return result.first;
   }
 }
