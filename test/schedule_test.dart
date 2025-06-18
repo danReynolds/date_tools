@@ -603,6 +603,9 @@ void main() {
           DateTime(2025, 4, 1),
         ],
       );
+
+      // Improperly ordered dates return an empty iterable.
+      expect(DateSchedule.daily().range(now.add(7.days), now), []);
     },
   );
 
