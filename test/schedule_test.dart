@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group(
-    'DateScheduler',
+    'DateSchedule',
     () {
       final now = DateTime(2025, 03, 25);
 
@@ -604,8 +604,22 @@ void main() {
         ],
       );
 
-      // Improperly ordered dates return an empty iterable.
-      expect(DateSchedule.daily().range(now.add(7.days), now), []);
+      // Specifying an end date before the start date returns days in the schedule in reverse chronological order.
+      expect(DateSchedule.daily().range(now.add(7.days), now), [
+        DateTime(2025, 4, 1),
+        DateTime(2025, 3, 31),
+        DateTime(2025, 3, 30),
+        DateTime(2025, 3, 29),
+        DateTime(2025, 3, 28),
+        DateTime(2025, 3, 27),
+        DateTime(2025, 3, 26),
+        DateTime(2025, 3, 25),
+      ]);
+
+      // Specifying the same date returns the single matching date.
+      expect(DateSchedule.daily().range(now, now), [
+        DateTime(2025, 3, 25),
+      ]);
     },
   );
 
@@ -704,6 +718,19 @@ void main() {
               DateTime.parse("2024-12-27 00:00:00.000000"),
               DateTime.parse("2024-11-29 00:00:00.000000"),
               DateTime.parse("2024-10-25 00:00:00.000000"),
+            ],
+          );
+        },
+      );
+
+      test(
+        'Date range schedule',
+        () {
+          expect(
+            DateSchedule.weekly(weekdays: [1]).range(now, now.add(14.days)),
+            [
+              DateTime.parse("2025-01-06 00:00:00.000000"),
+              DateTime.parse("2025-01-13 00:00:00.000000"),
             ],
           );
         },

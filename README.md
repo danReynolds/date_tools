@@ -80,6 +80,11 @@ print(DateSchedule.monthly(nthWeekdays: [-1], weekdays: [5]).start(now, ascendin
 // DateTime:<2024-11-29 00:00:00.000000>
 // DateTime:<2024-10-25 00:00:00.000000>
 
+/// A schedule that starts now and consists of every Monday from now until 14 days from now.
+DateSchedule.weekly(weekdays: [1]).range(now, now.add(14.days)),
+// DateTime:<2025-01-06 00:00:00.000000>
+// DateTime:<2025-01-13 00:00:00.000000>
+
 /// A schedule can also be created with a fixed list of dates.
 print(DateSchedule.fixed([DateTime(2025, 03, 25), DateTime(2025, 04, 27)]));
 // DateTime:<2025-03-25 00:00:00.000000>

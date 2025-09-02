@@ -75,18 +75,14 @@ abstract class DateSchedule {
   }) =>
       (ascending ? _next(startDate) : _prev(startDate));
 
-  Iterable<DateTime> range(
-    DateTime startDate,
-    DateTime endDate, {
-    bool ascending = true,
-  }) {
-    if (ascending) {
-      return start(startDate, ascending: ascending).takeWhile(
-        (date) => date.isSameDayOrBefore(endDate),
-      );
-    }
-    return start(endDate, ascending: false)
-        .takeWhile((date) => date.isSameDayOrAfter(startDate));
+  Iterable<DateTime> range(DateTime startDate, DateTime endDate) {
+    final ascending = startDate.isSameDayOrBefore(endDate);
+
+    return start(startDate, ascending: ascending).takeWhile(
+      (date) => ascending
+          ? date.isSameDayOrBefore(endDate)
+          : date.isSameOrAfter(endDate),
+    );
   }
 }
 
