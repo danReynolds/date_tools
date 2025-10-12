@@ -1,3 +1,7 @@
+## 0.2.1
+
+* Small implementation improvements.
+
 ## 0.2.0
 
 * Modify behavior of date [DateSchedule.range] to work for reverse-chronological startDate/endDate combinations.

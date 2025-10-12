@@ -492,7 +492,7 @@ void main() {
       );
 
       test(
-        'Combined schedule',
+        'Merged schedule',
         () {
           expect(
             DateSchedule.merge([

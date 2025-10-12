@@ -1,6 +1,6 @@
 name: date_tools
 description: Tools for managing dates including a DateInterval implementation.
-version: 0.2.0
+version: 0.2.1
 homepage: https://github.com/danReynolds/date_tools
 
 environment:

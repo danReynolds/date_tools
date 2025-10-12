@@ -422,20 +422,21 @@ class MergedDateSchedule extends DateSchedule {
 
   @override
   _prev(relativeDate) sync* {
-    final Set<DateTime> yieldedDates = {};
-
     final iterators = schedules
         .map((schedule) => schedule._prev(relativeDate).iterator)
         .where((iterator) => iterator.moveNext())
         .toList();
 
+    DateTime? currentDate;
+
     while (iterators.isNotEmpty) {
       iterators.sort((a, b) => b.current.compareTo(a.current));
       final currentIterator = iterators.first;
-      final currentValue = currentIterator.current;
+      final prevDate = currentIterator.current;
 
-      if (yieldedDates.add(currentValue)) {
-        yield currentValue;
+      if (currentDate == null || prevDate.isBefore(currentDate)) {
+        currentDate = prevDate;
+        yield prevDate;
       }
 
       if (currentIterator.moveNext()) {
@@ -448,20 +449,21 @@ class MergedDateSchedule extends DateSchedule {
 
   @override
   _next(relativeDate) sync* {
-    final Set<DateTime> yieldedDates = {};
-
     final iterators = schedules
         .map((schedule) => schedule._next(relativeDate).iterator)
         .where((iterator) => iterator.moveNext())
         .toList();
 
+    DateTime? currentDate;
+
     while (iterators.isNotEmpty) {
       iterators.sort((a, b) => a.current.compareTo(b.current));
       final currentIterator = iterators.first;
-      final currentValue = currentIterator.current;
+      final nextDate = currentIterator.current;
 
-      if (yieldedDates.add(currentValue)) {
-        yield currentValue;
+      if (currentDate == null || nextDate.isAfter(currentDate)) {
+        currentDate = nextDate;
+        yield nextDate;
       }
 
       if (currentIterator.moveNext()) {
